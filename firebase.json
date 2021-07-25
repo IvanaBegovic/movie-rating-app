@@ -2,11 +2,7 @@
   "hosting": {
     "public": "public",
     "site": "movie-rating-system-begovic",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
       {
         "source": "**/*",
