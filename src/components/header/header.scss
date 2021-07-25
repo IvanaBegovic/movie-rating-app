@@ -1,0 +1,11 @@
+.header {
+  text-align: -webkit-center;
+  width: calc(100% - 4px);
+  border: 2px solid #fff;
+  padding: 6vmin 0;
+
+  &__credits {
+    font-size: 1.5rem;
+    font-weight: 200;
+  }
+}

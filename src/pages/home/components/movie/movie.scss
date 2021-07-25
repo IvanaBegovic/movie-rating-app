@@ -1,0 +1,13 @@
+.movie {
+  max-width: calc(300px + 1rem);
+  border: 2px solid #fff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__plot {
+    text-align: left;
+    font-weight: 200;
+  }
+}

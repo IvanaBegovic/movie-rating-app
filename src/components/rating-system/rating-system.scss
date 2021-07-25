@@ -1,0 +1,14 @@
+.rating-system {
+  &__stars {
+    display: inline-block;
+    font-size: 2rem;
+    font-family: Times, sans-serif;
+    line-height: 1;
+
+    &::before {
+      content: '★★★★★';
+      letter-spacing: 3px;
+      -webkit-background-clip: text;
+    }
+  }
+}

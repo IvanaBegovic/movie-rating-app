@@ -1,0 +1,43 @@
+@import "./src/scss-constants";
+
+.search-bar {
+  display: flex;
+  width: 40vw;
+  align-items: flex-end;
+
+  &__input {
+    position: relative;
+    flex: 3;
+
+    &-input {
+      font: 1.5rem Arial, sans-serif;
+      color: #fff;
+      width: 100%;
+      box-sizing: border-box;
+      background: transparent;
+
+      border: 0;
+      padding: 7px 0;
+      border-bottom: 1px solid #fff;
+
+      & ~ .focus-border {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: $accent-color;
+        transition: 0.4s;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus ~ .focus-border {
+        width: 100%;
+        transition: 0.4s;
+      }
+    }
+  }
+}
