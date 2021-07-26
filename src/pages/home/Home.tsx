@@ -50,20 +50,19 @@ function Home() {
       } else if (result.data.Search) {
         setError('');
         // set rating from firebase
-        DatabaseActionsObject.readRatingById(result.data.id)
-          .then((snapshot) => {
-              if (snapshot.exists() && result.data.Search) {
-                setFilteredList(filteredList.concat(
-                  [...result.data.Search
-                    .map((item: any) => {
-                      return {...item, imdbRating: item.rating}
-                    })]
-                ));
+        const temp: MovieApiInterface[] = []
+        result.data.Search.forEach((searchItem: MovieApiInterface, index: number) => {
+          DatabaseActionsObject.readRatingById(searchItem.imdbID)
+            .then((snapshot) => {
+              if (index === result.data.Search.length - 1) {
+                setFilteredList(filteredList.concat(temp))
+              } else if (snapshot.exists()) {
+                temp.push({...searchItem, imdbRating: snapshot.val().rating})
               } else {
-                console.log("No data available");
+                temp.push(searchItem)
               }
-            }
-          )
+            })
+        })
       }
       setIsLoading(false);
     })
@@ -85,7 +84,7 @@ function Home() {
 
   function onRatingClick(movie: MovieApiInterface, newRating: number) {
     const DatabaseActionsObject = new DatabaseActions()
-    DatabaseActionsObject.addRating(movie, newRating)
+    DatabaseActionsObject.addRating(movie, newRating * 2)
 
     setTimeout(() => {
       getMovies()

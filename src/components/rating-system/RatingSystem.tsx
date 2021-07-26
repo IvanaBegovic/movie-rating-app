@@ -5,7 +5,7 @@ function RatingSystem({rating = 0, onRatingClick = {} as any}) {
   const [selectedStars, setSelectedStars] = useState<number>(5)
 
   useEffect(() => {
-    setSelectedStars(rating)
+    setSelectedStars(+rating)
   }, [rating])
 
   return (
@@ -21,8 +21,7 @@ function RatingSystem({rating = 0, onRatingClick = {} as any}) {
               }}
               onMouseLeave={() => {
                 setSelectedStars(rating)
-              }}>
-          ★
+              }}>★
         </span>
       )}
     </div>

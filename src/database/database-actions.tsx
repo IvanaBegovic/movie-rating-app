@@ -7,7 +7,7 @@ export class DatabaseActions {
   addRating(movie: MovieApiInterface, rating: number) {
     set(ref(this.db, 'ratings/' + movie.imdbID), {
       id: movie.imdbID,
-      rating: (+rating + +movie.imdbRating) / 2,
+      rating: movie.imdbRating ? ((+rating + +movie.imdbRating) / 2).toFixed(2) : +rating,
     });
   }
 

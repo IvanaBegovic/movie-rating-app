@@ -28,13 +28,14 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## Credits
 
-You can check the application on [firebase hosting website](). 
-The web application was made by Ivana Begovic
+You can check the application on [firebase hosting website](https://movie-rating-system-begovic.web.app). The web
+application was made by Ivana Begovic
 
 ## Comments
 
 Rating app uses two databases. One free open database with movies and firebase realtime database for custom ratings.
-Because of time limitations no stage managers were used.
-Application is not optimized to perfection.
+Because of time limitations no stage managers were used. Application is not optimized to perfection.
+
+Search input is not that "smart" because of movies database search limitations.
 
 Thank you for this opportunity :)
