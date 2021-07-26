@@ -16,11 +16,27 @@ function Home() {
   const [page, setPage] = useState<number>(1)
   const [error, setError] = useState<string>('')
 
+  useEffect(() => {
+    getMovies()
+  }, [page, keyword])
+
+  function getMovies(isRating = false) {
+    setIsLoading(true)
+    setError('');
+    if (isRating) {
+      setPage(1)
+    }
+    if (keyword !== '') {
+      getMoviesByKeyword(keyword, isRating)
+    } else {
+      getMoviesFromTop()
+    }
+  }
+
   function getMoviesFromTop() {
     const DatabaseActionsObject = new DatabaseActions()
     setFilteredList([])
     setPage(1)
-    setIsLoading(true)
     setKeyword('')
     const temp = MOVIES.slice(0, 10 * page).map((movie) => {
       return getMovieById(movie.id).then((apiMovie) => {
@@ -41,7 +57,7 @@ function Home() {
     });
   }
 
-  function handleApi(request: Promise<AxiosResponse>) {
+  function handleApi(request: Promise<AxiosResponse>, isRating: boolean = false) {
     const DatabaseActionsObject = new DatabaseActions()
 
     request.then((result: AxiosResponse) => {
@@ -54,12 +70,17 @@ function Home() {
         result.data.Search.forEach((searchItem: MovieApiInterface, index: number) => {
           DatabaseActionsObject.readRatingById(searchItem.imdbID)
             .then((snapshot) => {
-              if (index === result.data.Search.length - 1) {
-                setFilteredList(filteredList.concat(temp))
-              } else if (snapshot.exists()) {
+              if (snapshot.exists()) {
                 temp.push({...searchItem, imdbRating: snapshot.val().rating})
               } else {
                 temp.push(searchItem)
+              }
+              if (index === result.data.Search.length - 1) {
+                if (isRating) {
+                  setFilteredList([...temp])
+                } else {
+                  setFilteredList([...filteredList.concat(temp)])
+                }
               }
             })
         })
@@ -68,17 +89,16 @@ function Home() {
     })
   }
 
-  function getMoviesByKeyword(input: string) {
-    setIsLoading(true)
+  function getMoviesByKeyword(input: string, isRating: boolean = false) {
     if (input !== keyword) {
       setFilteredList([])
       setPage(1)
     }
     setKeyword(input)
     if (isNumber(input)) {
-      handleApi(getMoviesByYear(+input, page))
+      handleApi(getMoviesByYear(+input, page), isRating)
     } else if (isAlphabet(input)) {
-      handleApi(getMoviesByTitle(input, page))
+      handleApi(getMoviesByTitle(input, page), isRating)
     }
   }
 
@@ -87,26 +107,13 @@ function Home() {
     DatabaseActionsObject.addRating(movie, newRating * 2)
 
     setTimeout(() => {
-      getMovies()
+      getMovies(true)
     }, 800)
   }
 
   function onLoadMoreClick() {
     setPage(page + 1)
   }
-
-  function getMovies() {
-    if (keyword !== '') {
-      getMoviesByKeyword(keyword)
-    } else {
-      getMoviesFromTop()
-    }
-  }
-
-  useEffect(() => {
-    getMovies()
-  }, [page, keyword])
-
 
   return (
     <>
