@@ -2,7 +2,7 @@ import React from 'react';
 import './header.scss';
 import {SearchBarComponent} from "../index";
 
-function Header({setFilteredList = {} as any, fetchData = {} as any}) {
+function Header({fetchData = {} as any}) {
 
   return (
     <div className={'header'}>
@@ -11,8 +11,7 @@ function Header({setFilteredList = {} as any, fetchData = {} as any}) {
            - made by Ivana Begovic
         </span>
       </h1>
-      <SearchBarComponent fetchData={fetchData}
-                          setFilteredList={setFilteredList}/>
+      <SearchBarComponent fetchData={fetchData}/>
     </div>
   );
 }

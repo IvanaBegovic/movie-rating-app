@@ -2,21 +2,13 @@ import React, {useEffect, useState} from 'react';
 import './search-bar.scss';
 import useDebounce from "../../hooks/useDebounce";
 
-function SearchBar({
-                     setFilteredList = {} as any,
-                     fetchData = {} as any
-                   }) {
+function SearchBar({fetchData = {} as any}) {
   const [keyword, setKeyword] = useState<string>('');
   const debouncedSearchTerm = useDebounce(keyword, 500);
 
   useEffect(() => {
-      if (debouncedSearchTerm && keyword.length > 1) {
-        fetchData(debouncedSearchTerm);
-      } else {
-        setFilteredList([]);
-      }
-    },
-    [debouncedSearchTerm]
+      fetchData(debouncedSearchTerm);
+    }, [debouncedSearchTerm]
   );
 
   return (

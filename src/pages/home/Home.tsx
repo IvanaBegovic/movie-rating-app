@@ -95,10 +95,15 @@ function Home() {
       setPage(1)
     }
     setKeyword(input)
-    if (isNumber(input)) {
-      handleApi(getMoviesByYear(+input, page), isRating)
-    } else if (isAlphabet(input)) {
-      handleApi(getMoviesByTitle(input, page), isRating)
+    if (input === '') getMoviesFromTop()
+    else if (input.length <= 1)
+      return
+    else {
+      if (isNumber(input)) {
+        handleApi(getMoviesByYear(+input, page), isRating)
+      } else if (isAlphabet(input)) {
+        handleApi(getMoviesByTitle(input, page), isRating)
+      }
     }
   }
 
@@ -117,8 +122,7 @@ function Home() {
 
   return (
     <>
-      <HeaderComponent setFilteredList={setFilteredList}
-                       fetchData={getMoviesByKeyword}/>
+      <HeaderComponent fetchData={getMoviesByKeyword}/>
       {isLoading ?
         <h2>Loading...</h2>
         : error !== '' ?
