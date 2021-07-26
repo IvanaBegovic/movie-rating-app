@@ -4,11 +4,14 @@
     font-size: 2rem;
     font-family: Times, sans-serif;
     line-height: 1;
+    letter-spacing: 3px;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent;
+    width: 148px;
+    align-self: center;
 
-    &::before {
-      content: '★★★★★';
-      letter-spacing: 3px;
-      -webkit-background-clip: text;
+    span {
+      cursor: pointer;
     }
   }
 }

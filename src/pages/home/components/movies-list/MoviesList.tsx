@@ -8,7 +8,8 @@ import {MovieApiInterface} from "../../../../interfaces/movieApiInterface";
 function MoviesList({
                       movies = [] as MovieApiInterface[],
                       title = '',
-                      onLoadMoreClick = {} as any
+                      onLoadMoreClick = {} as any,
+                      onRatingClick = {} as any
                     }) {
   return (
     <>
@@ -16,7 +17,8 @@ function MoviesList({
       <div className='movies-list'>
         {movies.map((movie: MovieApiInterface, index: number) =>
           <MovieComponent key={'movie-' + index}
-                          movie={movie}/>
+                          movie={movie}
+                          onRatingClick={onRatingClick}/>
         )}
         <div className='movies-list__button'>
           <Button onClick={() => onLoadMoreClick()}

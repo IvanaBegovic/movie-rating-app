@@ -7,6 +7,7 @@ import {MovieApiInterface} from "../../interfaces/movieApiInterface";
 import {getMovieById, getMoviesByTitle, getMoviesByYear} from "../../api/api-requests";
 import {AxiosResponse} from "axios";
 import {isAlphabet, isNumber} from "../../components/search-bar/utils/validations";
+import {DatabaseActions} from "../../database/database-actions";
 
 function Home() {
   const [filteredList, setFilteredList] = useState<MovieApiInterface[]>([]);
@@ -15,14 +16,23 @@ function Home() {
   const [page, setPage] = useState<number>(1)
   const [error, setError] = useState<string>('')
 
-  function getMovies() {
+  function getMoviesFromTop() {
+    const DatabaseActionsObject = new DatabaseActions()
     setFilteredList([])
     setPage(1)
     setIsLoading(true)
     setKeyword('')
     const temp = MOVIES.slice(0, 10 * page).map((movie) => {
       return getMovieById(movie.id).then((apiMovie) => {
-        return apiMovie.data
+        return DatabaseActionsObject.readRatingById(movie.id)
+          .then((snapshot) => {
+              if (snapshot.exists()) {
+                return {...apiMovie.data, imdbRating: snapshot.val().rating}
+              } else {
+                return apiMovie.data
+              }
+            }
+          )
       })
     })
     Promise.all(temp).then((values) => {
@@ -32,18 +42,34 @@ function Home() {
   }
 
   function handleApi(request: Promise<AxiosResponse>) {
+    const DatabaseActionsObject = new DatabaseActions()
+
     request.then((result: AxiosResponse) => {
       if (result.data.Error) {
-        setError(result.data.Error)
+        setError(result.data.Error);
       } else if (result.data.Search) {
-        setError('')
+        setError('');
+        // set rating from firebase
+        DatabaseActionsObject.readRatingById(result.data.id)
+          .then((snapshot) => {
+              if (snapshot.exists() && result.data.Search) {
+                setFilteredList(filteredList.concat(
+                  [...result.data.Search
+                    .map((item: any) => {
+                      return {...item, imdbRating: item.rating}
+                    })]
+                ));
+              } else {
+                console.log("No data available");
+              }
+            }
+          )
       }
       setIsLoading(false);
-      setFilteredList(result.data.Search ? filteredList.concat([...result.data.Search]) : []);
     })
   }
 
-  function fetchData(input: string) {
+  function getMoviesByKeyword(input: string) {
     setIsLoading(true)
     if (input !== keyword) {
       setFilteredList([])
@@ -57,29 +83,45 @@ function Home() {
     }
   }
 
+  function onRatingClick(movie: MovieApiInterface, newRating: number) {
+    const DatabaseActionsObject = new DatabaseActions()
+    DatabaseActionsObject.addRating(movie, newRating)
+
+    setTimeout(() => {
+      getMovies()
+    }, 800)
+  }
+
   function onLoadMoreClick() {
     setPage(page + 1)
   }
 
-  useEffect(() => {
+  function getMovies() {
     if (keyword !== '') {
-      fetchData(keyword)
+      getMoviesByKeyword(keyword)
     } else {
-      getMovies()
+      getMoviesFromTop()
     }
+  }
+
+  useEffect(() => {
+    getMovies()
   }, [page, keyword])
+
 
   return (
     <>
       <HeaderComponent setFilteredList={setFilteredList}
-                       fetchData={fetchData}/>
+                       fetchData={getMoviesByKeyword}/>
       {isLoading ?
         <h2>Loading...</h2>
         : error !== '' ?
           <h2>{error}</h2>
-          : <MoviesListComponent title={'Top 100 movies of all time'}
-                                 movies={filteredList}
-                                 onLoadMoreClick={() => onLoadMoreClick()}/>}
+          :
+          <MoviesListComponent title={keyword !== '' ? `Search results for "${keyword}"` : 'Top 100 movies of all time'}
+                               movies={filteredList}
+                               onLoadMoreClick={() => onLoadMoreClick()}
+                               onRatingClick={onRatingClick}/>}
 
     </>
   );

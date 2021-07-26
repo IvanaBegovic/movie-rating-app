@@ -502,4 +502,3 @@ export const MOVIES: MovieInterface[] = [
     id: "tt0097576"
   }
 ]
-

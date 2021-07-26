@@ -1,8 +1,10 @@
 import React from 'react';
 import './movie.scss';
 import {MovieApiInterface} from "../../../../interfaces/movieApiInterface";
+import {RatingSystemComponent} from "../../../../components";
 
-function Movie({movie = {} as MovieApiInterface}) {
+function Movie({movie = {} as MovieApiInterface, onRatingClick = {} as any}) {
+
   return (
     <>
       {movie && typeof movie !== 'undefined' ?
@@ -17,6 +19,8 @@ function Movie({movie = {} as MovieApiInterface}) {
           {movie.Plot && <p className='movie__plot'>{movie.Plot}</p>}
           <p><b>Year:</b> {movie.Year}</p>
           {movie.Actors && <p><b>Actors:</b> {movie.Actors}</p>}
+          <RatingSystemComponent rating={movie.imdbRating ? +movie.imdbRating / 2 : 0}
+                                 onRatingClick={(rating: number) => onRatingClick(movie, rating)}/>
         </div> : null}
     </>
   );
